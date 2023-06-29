@@ -1,0 +1,2 @@
+#+title: My system configurations collection
+#+author: Egor Bakulin
