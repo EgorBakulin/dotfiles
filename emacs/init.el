@@ -1,6 +1,7 @@
 ;; Initialize package sources
 (require 'package)
 
+
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
                          ("org" . "https://orgmode.org/elpa/")
                          ("elpa" . "https://elpa.gnu.org/packages/")))
@@ -15,6 +16,19 @@
 
 (require 'use-package)
 (setq use-package-always-ensure t)
+
+(defvar bootstrap-version)
+(let ((bootstrap-file
+      (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+        "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+        'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
 
 (column-number-mode)
 
@@ -36,20 +50,25 @@
 
 (use-package all-the-icons)
 
-;(use-package doom-modeline
-  ;; :ensure t
-  ;; :init (doom-modeline-mode 1)
-  ;; :custom ((doom-modeline-height 30)))
+(global-hl-line-mode)
+
+(use-package powerline :ensure t)
+
+(use-package spaceline
+  :after powerline
+  :init
+  (spaceline-helm-mode)
+  (spaceline-spacemacs-theme))
 
 (use-package dashboard
   :ensure t
   :config
   (setq dashboard-center-content t)
   (setq dashboard-items '((recents  . 5)
-			  (bookmarks . 5)
-			  (projects . 5)
-			  (agenda . 5)
-			  (registers . 5)))
+                          (bookmarks . 5)
+                          (projects . 5)
+                          (agenda . 5)
+                          (registers . 5)))
   (dashboard-setup-startup-hook))
 
 (use-package swiper :ensure t)
@@ -57,18 +76,18 @@
 (use-package ivy
   :diminish
   :bind (("C-s" . swiper)
-	 :map ivy-minibuffer-map
-	 ("TAB" . ivy-alt-done)	
-	 ("C-l" . ivy-alt-done)
-	 ("C-j" . ivy-next-line)
-	 ("C-k" . ivy-previous-line)
-	 :map ivy-switch-buffer-map
-	 ("C-k" . ivy-previous-line)
-	 ("C-l" . ivy-done)
-	 ("C-d" . ivy-switch-buffer-kill)
-	 :map ivy-reverse-i-search-map
-	 ("C-k" . ivy-previous-line)
-	 ("C-d" . ivy-reverse-i-search-kill))
+         :map ivy-minibuffer-map
+         ("TAB" . ivy-alt-done)	
+         ("C-l" . ivy-alt-done)
+         ("C-j" . ivy-next-line)
+         ("C-k" . ivy-previous-line)
+         :map ivy-switch-buffer-map
+         ("C-k" . ivy-previous-line)
+         ("C-l" . ivy-done)
+         ("C-d" . ivy-switch-buffer-kill)
+         :map ivy-reverse-i-search-map
+         ("C-k" . ivy-previous-line)
+         ("C-d" . ivy-reverse-i-search-kill))
   :config
   (ivy-mode 1))
 
@@ -76,14 +95,23 @@
   :init
   (ivy-rich-mode 1))
 
-(use-package adwaita-dark-theme
+(use-package doom-themes
     :init
-    (load-theme 'adwaita-dark t)
-    (eval-after-load 'neotree #'adwaita-dark-theme-neotree-configuration-enable))
+    (load-theme 'doom-Iosvkem t))
+
+(defun darker-faces ()
+  "must be more darker then default colorcheme"
+  (interactive)
+  (face-remap-add-relative 'default
+                           :background "gray8"))
 
 (use-package company
   :config
   (add-hook 'after-init-hook 'global-company-mode))
+
+(use-package company-posframe
+  :after posframe
+  :config (company-posframe-mode 1))
 
 (use-package posframe)
 
@@ -102,57 +130,57 @@
   :config
   (progn
     (setq treemacs-collapse-dirs                   (if treemacs-python-executable 3 0)
-	  treemacs-deferred-git-apply-delay        0.5
-	  treemacs-directory-name-transformer      #'identity
-	  treemacs-display-in-side-window          t
-	  treemacs-eldoc-display                   'simple
-	  treemacs-file-event-delay                2000
-	  treemacs-file-extension-regex            treemacs-last-period-regex-value
-	  treemacs-file-follow-delay               0.2
-	  treemacs-file-name-transformer           #'identity
-	  treemacs-follow-after-init               t
-	  treemacs-expand-after-init               t
-	  treemacs-find-workspace-method           'find-for-file-or-pick-first
-	  treemacs-git-command-pipe                ""
-	  treemacs-goto-tag-strategy               'refetch-index
-	  treemacs-header-scroll-indicators        '(nil . "^^^^^^")
-	  treemacs-hide-dot-git-directory          t
-	  treemacs-indentation                     2
-	  treemacs-indentation-string              " "
-	  treemacs-is-never-other-window           nil
-	  treemacs-max-git-entries                 5000
-	  treemacs-missing-project-action          'ask
-	  treemacs-move-forward-on-expand          nil
-	  treemacs-no-png-images                   nil
-	  treemacs-no-delete-other-windows         t
-	  treemacs-project-follow-cleanup          nil
-	  treemacs-persist-file                    (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
-	  treemacs-position                        'left
-	  treemacs-read-string-input               'from-child-frame
-	  treemacs-recenter-distance               0.1
-	  treemacs-recenter-after-file-follow      nil
-	  treemacs-recenter-after-tag-follow       nil
-	  treemacs-recenter-after-project-jump     'always
-	  treemacs-recenter-after-project-expand   'on-distance
-	  treemacs-litter-directories              '("/node_modules" "/.venv" "/.cask")
-	  treemacs-project-follow-into-home        nil
-	  treemacs-show-cursor                     nil
-	  treemacs-show-hidden-files               t
-	  treemacs-silent-filewatch                nil
-	  treemacs-silent-refresh                  nil
-	  treemacs-sorting                         'alphabetic-asc
-	  treemacs-select-when-already-in-treemacs 'move-back
-	  treemacs-space-between-root-nodes        t
-	  treemacs-tag-follow-cleanup              t
-	  treemacs-tag-follow-delay                1.5
-	  treemacs-text-scale                      nil
-	  treemacs-user-mode-line-format           nil
-	  treemacs-user-header-line-format         nil
-	  treemacs-wide-toggle-width               70
-	  treemacs-width                           35
-	  treemacs-width-increment                 1
-	  treemacs-width-is-initially-locked       t
-	  treemacs-workspace-switch-cleanup        nil)
+          treemacs-deferred-git-apply-delay        0.5
+          treemacs-directory-name-transformer      #'identity
+          treemacs-display-in-side-window          t
+          treemacs-eldoc-display                   'simple
+          treemacs-file-event-delay                2000
+          treemacs-file-extension-regex            treemacs-last-period-regex-value
+          treemacs-file-follow-delay               0.2
+          treemacs-file-name-transformer           #'identity
+          treemacs-follow-after-init               t
+          treemacs-expand-after-init               t
+          treemacs-find-workspace-method           'find-for-file-or-pick-first
+          treemacs-git-command-pipe                ""
+          treemacs-goto-tag-strategy               'refetch-index
+          treemacs-header-scroll-indicators        '(nil . "^^^^^^")
+          treemacs-hide-dot-git-directory          t
+          treemacs-indentation                     2
+          treemacs-indentation-string              " "
+          treemacs-is-never-other-window           nil
+          treemacs-max-git-entries                 5000
+          treemacs-missing-project-action          'ask
+          treemacs-move-forward-on-expand          nil
+          treemacs-no-png-images                   nil
+          treemacs-no-delete-other-windows         t
+          treemacs-project-follow-cleanup          nil
+          treemacs-persist-file                    (expand-file-name ".cache/treemacs-persist" user-emacs-directory)
+          treemacs-position                        'left
+          treemacs-read-string-input               'from-child-frame
+          treemacs-recenter-distance               0.1
+          treemacs-recenter-after-file-follow      nil
+          treemacs-recenter-after-tag-follow       nil
+          treemacs-recenter-after-project-jump     'always
+          treemacs-recenter-after-project-expand   'on-distance
+          treemacs-litter-directories              '("/node_modules" "/.venv" "/.cask")
+          treemacs-project-follow-into-home        nil
+          treemacs-show-cursor                     nil
+          treemacs-show-hidden-files               t
+          treemacs-silent-filewatch                nil
+          treemacs-silent-refresh                  nil
+          treemacs-sorting                         'alphabetic-asc
+          treemacs-select-when-already-in-treemacs 'move-back
+          treemacs-space-between-root-nodes        t
+          treemacs-tag-follow-cleanup              t
+          treemacs-tag-follow-delay                1.5
+          treemacs-text-scale                      nil
+          treemacs-user-mode-line-format           nil
+          treemacs-user-header-line-format         nil
+          treemacs-wide-toggle-width               70
+          treemacs-width                           35
+          treemacs-width-increment                 1
+          treemacs-width-is-initially-locked       t
+          treemacs-workspace-switch-cleanup        nil)
 
     ;; The default width and height of the icons is 22 pixels. If you are
     ;; using a Hi-DPI display, uncomment this to double the icon size.
@@ -165,7 +193,7 @@
       (treemacs-git-commit-diff-mode t))
 
     (pcase (cons (not (null (executable-find "git")))
-		 (not (null treemacs-python-executable)))
+                 (not (null treemacs-python-executable)))
       (`(t . t)
        (treemacs-git-mode 'deferred))
       (`(t . _)
@@ -174,13 +202,14 @@
     (treemacs-hide-gitignored-files-mode nil))
   :bind
   (:map global-map
-	("M-0"       . treemacs-select-window)
-	("C-x t 1"   . treemacs-delete-other-windows)
-	("C-x t t"   . treemacs)
-	("C-x t d"   . treemacs-select-directory)
-	("C-x t B"   . treemacs-bookmark)
-	("C-x t C-t" . treemacs-find-file)
-	("C-x t M-t" . treemacs-find-tag)))
+        ("M-0"       . treemacs-select-window)
+        ("C-x t 1"   . treemacs-delete-other-windows)
+        ("C-x t t"   . treemacs)
+        ("C-x t d"   . treemacs-select-directory)
+        ("C-x t B"   . treemacs-bookmark)
+        ("C-x t C-t" . treemacs-find-file)
+        ("C-x t M-t" . treemacs-find-tag))
+  :hook (treemacs-mode . darker-faces))
 
 (use-package treemacs-evil
   :after (treemacs evil)
@@ -204,9 +233,16 @@
   :config (treemacs-set-scope-type 'Perspectives))
 
 (use-package vterm
-  :ensure t)
+  :ensure t
+  :hook (vterm-mode . darker-faces))
 
-(add-hook 'term-mode-hook 'evil-emacs-state)
+(use-package dimmer
+  :config
+  (dimmer-configure-helm)
+  (dimmer-configure-which-key)
+  (dimmer-mode t))
+
+(use-package vdiff)
 
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
@@ -249,11 +285,23 @@
 
   (rune/leader-keys
     "t" '(treemacs :which-key "treemacs-toggle")
-    "h" '(info :which-key "documentation")))
+    "h" '(info :which-key "documentation")
+    "e" '(emojify-insert-emoji :which-key "insert emoji")
+    "mc" '(general/config-file :which-key "Open configuration file")
+    "my" '(general/yank-window-filePath :which-key "copy filepath to clipboard")))
+
+(defun general/config-file ()
+  "Open emacs configuration file"
+  (interactive)
+  (find-file "~/.config/emacs/init.org"))
+
+(defun general/yank-window-filePath ()
+  (interactive)
+  (kill-new (buffer-file-name)))
 
 (use-package avy
   :after general
-  :general (:states 'normal "s" 'avy-goto-word-0)
+  ;; :general (:states 'normal "s" 'avy-goto-word-0)
   :config (avy-setup-default))
 
 (setq make-backup-files nil)
@@ -261,7 +309,10 @@
 (global-visual-line-mode t)
 
 (use-package emojify
-  :hook (after-init . global-emojify-mode))
+  :hook (org-mode . emojify-mode))
+
+(use-package origami
+  :hook (prog-mode . origami-mode))
 
 (use-package magit
   :custom
@@ -271,13 +322,13 @@
   :config
   (custom-set-variables
    '(git-gutter:update-interval 2)
-   '(git-gutter:modified-sign "▓") 
-   '(git-gutter:added-sign "▓")    
-   '(git-gutter:deleted-sign "▓"))
+   '(git-gutter:modified-sign "▌") 
+   '(git-gutter:added-sign "▌")    
+   '(git-gutter:deleted-sign "▌"))
 
-  (set-face-background 'git-gutter:modified "purple") 
-  (set-face-foreground 'git-gutter:added "green")
-  (set-face-foreground 'git-gutter:deleted "red")
+  (set-face-foreground 'git-gutter:modified "DeepSkyBlue4") 
+  (set-face-foreground 'git-gutter:added "SpringGreen4")
+  (set-face-foreground 'git-gutter:deleted "brown4")
   (global-git-gutter-mode +1))
 
 (use-package yasnippet
@@ -300,13 +351,19 @@
 
 (setq gc-cons-threshold 100000000)
 (setq read-process-output-max (* 1024 1024))
-  (use-package eglot)
-  (use-package lsp-mode :hook ((lsp-mode . lsp-enable-which-key-integration)))
-  (use-package lsp-mode
-    :hook ((lsp-mode . lsp-enable-which-key-integration)))
-  (use-package lsp-ui)
 
+(use-package lsp-mode
+  :hook ((lsp-mode . lsp-enable-which-key-integration)))
 
+(use-package lsp-ui)
+
+(use-package tree-sitter)
+
+(use-package tree-sitter-langs)
+
+(use-package flycheck)
+
+(use-package multi-compile)
 
 (use-package typescript-mode
   :mode "\\.ts\\'"
@@ -315,11 +372,30 @@
   :config
   (setq typescript-indent-level 4))
 
-(use-package php-mode :mode "\\.php\\'")
+(use-package async)
+
+(use-package php-mode
+  :after '(tree-sitter tree-sitter-langs)
+  :mode "\\.php\\'"
+  :hook (php-mode . tree-sitter-hl-mode))
 
 (use-package rustic)
 
-(use-package go-mode)
+(use-package racket-mode)
+
+(use-package go-eldoc)
+
+(use-package company-go)
+
+(use-package go-mode
+  :config
+  (setq-default gofmt-command "goimports")
+  (add-hook 'go-mode-hook 'go-eldoc-setup)
+  (add-hook 'go-mode-hook (lambda ()
+                            (set (make-local-variable 'company-backends) '(company-go))
+                            (company-mode)))
+  (add-hook 'go-mode-hook 'yas-minor-mode)
+  (add-hook 'go-mode-hook 'flycheck-mode))
 
 (use-package yaml-mode
   :init
@@ -335,16 +411,13 @@
 
 (use-package twig-mode)
 
+(use-package emmet-mode)
+
 (defun efs/org-mode-setup ()
   (org-indent-mode)
   (variable-pitch-mode 1)
   (visual-line-mode 1))
 (defun efs/org-font-setup ()
-  ;; Replace list hyphen with dot
-  (font-lock-add-keywords 'org-mode
-                          '(("^ *\\([-]\\) "
-                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
-
   ;; Set faces for heading levels
   (dolist (face '((org-level-1 . 1.2)
                   (org-level-2 . 1.1)
@@ -390,6 +463,28 @@
 
 (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook #'efs/org-babel-tangle-config)))
 
+(setq org-clock-sound "~/.config/emacs/alarm-clock-elapsed.wav")
+
+(use-package org-capture
+  :ensure nil
+  :after org
+  :preface
+  (defvar template/org-contacts
+    (concat "* %(org-contacts-template-name)\n"
+            ":PROPERTIES:\n"
+            ":tags: :hash: \n"
+            ":ADDRESS: 🏚 \n"
+            ":BIRTHDAY: 🎂 \n"
+            ":EMAIL: :email: \n"
+            ":TELEGRAM: :airplane: \n"
+            ":NOTE: 📓 \n"
+            ":END:"))
+  :init
+  (setq org-capture-templates
+        `(("c" "Contact" entry (file "~/Documents/org/contacts.org"),
+           template/org-contacts
+           :empty-lines 1))))
+
 (use-package org-bullets
   :after org
   :hook (org-mode . org-bullets-mode)
@@ -401,12 +496,19 @@
   :custom
   (org-roam-directory "~/Documents/org/roam")
   (org-roam-capture-templates
-   '(("d" "default" plain
+   `(("d" "default" plain
       "\ntags:"
       :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}")
       :unnarrowed t)
-     ("p" "placetgroup-task" plain
-      "\ntags:\njira link https://crab.media/${title}"
+     ("j" "jira-task" plain
+      ,(concat
+       "\ntags:"
+       "\njira link https://crab.media/browse/${title}"
+       "\ngit branch: ~feature/${title}/FILL_ME~"
+       "\nmarkdown link:"
+       "\n#+BEGIN_SRC md"
+       "\n  [${title}](https://crab.media/browse/${title}) -- FILL_ME"
+       "\n#+END_SRC")
       :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}")
       :unnarrowed t)))
 
@@ -434,12 +536,47 @@
                     org-roam-ui-update-on-save t
                     org-roam-ui-open-on-start t))
 
+(defun agenda-init ()
+  "Initialize agenda"
+  (interactive)
+  (setq org-agenda-files
+        (directory-files-recursively "~/Documents/org/" ".org$")))
+
+(use-package org-download
+  :ensure t
+  :defer t
+  :init
+  (with-eval-after-load 'org (org-download-enable))
+  (setq-default org-download-image-dir "~/Documents/org/imgs"))
+
+(straight-use-package '(el-easydraw
+                        :type git
+                        :host github
+                        :repo "misohena/el-easydraw"))
+
+(require 'edraw-org)
+(edraw-org-setup-default)
+
+(use-package org-contacts
+  :custom (org-contacts-files '("~/org/roam/contacts.org")))
+
+(use-package ox-jira)
+
+(straight-use-package '(telega
+                        :type git
+                        :host github
+                        :repo "zevlg/telega.el"))
+(use-package telega
+  :config (setq telega-use-docker t))
+
+(straight-use-package 'command-log-mode)
 (use-package command-log-mode)
 
+(straight-use-package 'counsel)
 (use-package counsel
   :bind (("C-M-j" . counsel-switch-buffer)
-	 ("M-x" . counsel-M-x)
-	 ("C-x b" . counsel-ibuffer)
-	 ("C-x C-f" . counsel-find-file)
-	 :map minibuffer-local-map
-	 ("C-r" . 'counsel-minibuffer-history)))
+         ("M-x" . counsel-M-x)
+         ("C-x b" . counsel-ibuffer)
+         ("C-x C-f" . counsel-find-file)
+         :map minibuffer-local-map
+         ("C-r" . 'counsel-minibuffer-history)))

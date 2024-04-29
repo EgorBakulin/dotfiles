@@ -1,0 +1,350 @@
+#+title: i3 config 
+
+* keys definition
+navigation keys in vim style
+#+begin_src conf-unix :tangle config
+  set $left-key h
+  set $down-key j
+  set $up-key k
+  set $right-key l
+
+#+end_src
+
+main mod key to control window manager
+#+begin_src conf-unix :tangle config
+  set $mod Mod4
+
+#+end_src
+* wm controls
+kill window by =win + shift + q=
+#+begin_src conf-unix :tangle config
+  bindsym $mod+Shift+q kill
+#+end_src
+
+** floating mode
+=win + mouse= work with floating windows.
+=left click= to drag
+=right click= to resize
+#+begin_src conf-unix :tangle config
+  floating_modifier $mod
+#+end_src
+
+=win + shift + space= to toggle floating
+#+begin_src conf-unix :tangle config
+  bindsym $mod+Shift+space floating toggle
+
+#+end_src
+
+=win + space= focus  to (tiles/floating)
+#+begin_src conf-unix :tangle config
+  bindsym $mod+space focus mode_toggle
+
+#+end_src
+
+** fullscreen mode
+=win + f= fullscreen mode toggle
+#+begin_src conf-unix :tangle config
+  bindsym $mod+f fullscreen toggle
+#+end_src
+
+** resize mode
+also you can use =win + mouse= 
+
+=win + r= toggle resize mode
+#+begin_src conf-unix :tangle config
+  bindsym $mod+r mode "resize"
+#+end_src
+
+*** resize mode controls
+#+begin_src conf-unix :tangle config
+  mode "resize" {
+          # These bindings trigger as soon as you enter the resize mode
+
+          # Pressing left will shrink the window’s width.
+          # Pressing right will grow the window’s width.
+          # Pressing up will shrink the window’s height.
+          # Pressing down will grow the window’s height.
+          bindsym $left-key resize shrink width 10 px or 10 ppt
+          bindsym $down-key resize grow height 10 px or 10 ppt
+          bindsym $up-key resize shrink height 10 px or 10 ppt
+          bindsym $right-key resize grow width 10 px or 10 ppt
+
+          # same bindings, but for the arrow keys
+          bindsym Left resize shrink width 10 px or 10 ppt
+          bindsym Down resize grow height 10 px or 10 ppt
+          bindsym Up resize shrink height 10 px or 10 ppt
+          bindsym Right resize grow width 10 px or 10 ppt
+
+          # back to normal: Enter or Escape or $mod+r
+          bindsym Return mode "default"
+          bindsym Escape mode "default"
+          bindsym $mod+r mode "default"
+  }
+          
+#+end_src
+
+** windows focus changing
+by hjkl
+#+begin_src conf-unix :tangle config
+  bindsym $mod+$left-key focus left
+  bindsym $mod+$down-key focus down
+  bindsym $mod+$up-key focus up
+  bindsym $mod+$right-key focus right
+#+end_src
+alternatively by arrow keys
+#+begin_src conf-unix :tangle config
+  bindsym $mod+Left focus left
+  bindsym $mod+Down focus down
+  bindsym $mod+Up focus up
+  bindsym $mod+Right focus right
+#+end_src
+
+** windows movement
+by hjkl
+#+begin_src conf-unix :tangle config
+  bindsym $mod+Shift+$left-key move left
+  bindsym $mod+Shift+$down-key move down
+  bindsym $mod+Shift+$up-key move up
+  bindsym $mod+Shift+$right-key move right
+#+end_src
+alternatively by arrow keys
+#+begin_src conf-unix :tangle config
+  bindsym $mod+Shift+Left move left
+  bindsym $mod+Shift+Down move down
+  bindsym $mod+Shift+Up move up
+  bindsym $mod+Shift+Right move right
+
+#+end_src
+
+** windows containers
+=win + b= create horizontal split container
+#+begin_src conf-unix :tangle config
+  bindsym $mod+b split h
+
+#+end_src
+=win + v= create vertical split container
+#+begin_src conf-unix :tangle config
+  bindsym $mod+v split v
+          
+#+end_src
+=win + w= toogle (tabbed/split)
+#+begin_src conf-unix :tangle config
+  bindsym $mod+w layout toggle tabbed split
+          
+#+end_src
+=win + e= toogle (vertical/horizontal) split
+#+begin_src conf-unix :tangle config
+  bindsym $mod+e layout toggle split
+
+#+end_src
+=win + a= focus on parent containers
+#+begin_src conf-unix :tangle config
+  bindsym $mod+a focus parent
+
+#+end_src
+
+** workspaces
+workspace names
+#+begin_src conf-unix :tangle config
+  set $ws1 "1"
+  set $ws2 "2"
+  set $ws3 "3"
+  set $ws4 "4"
+  set $ws5 "5"
+  set $ws6 "6"
+  set $ws7 "7"
+  set $ws8 "8"
+  set $ws9 "9"
+  set $ws10 "10"
+#+end_src
+
+switch to workspace with =win + <number>=
+#+begin_src conf-unix :tangle config
+  bindsym $mod+1 workspace $ws1
+  bindsym $mod+2 workspace $ws2
+  bindsym $mod+3 workspace $ws3
+  bindsym $mod+4 workspace $ws4
+  bindsym $mod+5 workspace $ws5
+  bindsym $mod+6 workspace $ws6
+  bindsym $mod+7 workspace $ws7
+  bindsym $mod+8 workspace $ws8
+  bindsym $mod+9 workspace $ws9
+  bindsym $mod+0 workspace $ws10
+#+end_src
+=win + shift + <number>= to move focused container to workspace
+#+begin_src conf-unix :tangle config
+  bindsym $mod+Shift+1 move container to workspace $ws1
+  bindsym $mod+Shift+2 move container to workspace $ws2
+  bindsym $mod+Shift+3 move container to workspace $ws3
+  bindsym $mod+Shift+4 move container to workspace $ws4
+  bindsym $mod+Shift+5 move container to workspace $ws5
+  bindsym $mod+Shift+6 move container to workspace $ws6
+  bindsym $mod+Shift+7 move container to workspace $ws7
+  bindsym $mod+Shift+8 move container to workspace $ws8
+  bindsym $mod+Shift+9 move container to workspace $ws9
+  bindsym $mod+Shift+0 move container to workspace $ws10
+
+#+end_src
+
+** wm commands
+
+=win + shift + c= soft wm reload
+#+begin_src conf-unix :tangle config
+  bindsym $mod+Shift+c reload
+          
+#+end_src
+=win + shift + r= hard wm reload
+#+begin_src conf-unix :tangle config
+  bindsym $mod+Shift+r restart
+#+end_src
+
+=win + shift + e= exit i3
+#+begin_src conf-unix :tangle config
+  bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
+#+end_src
+
+* style
+default font
+#+begin_src conf-unix :tangle config
+  font pango:monospace 8
+
+#+end_src
+
+color scheme
+#+begin_src conf-unix :tangle config
+  set $base00 #99B938
+  set $base01 #99B938
+  set $base02 #d6d6d6
+  set $base03 #449CDB
+  set $base04 #969896
+  set $base05 #4d4d4c
+  set $base06 #282a2e
+  set $base07 #1d1f21
+  set $base08 #c82829
+  set $base09 #f5871f
+  set $base0A #eab700
+  set $base0B #718c00
+  set $base0C #51c5b6
+  set $base0D #4271ae
+  set $base0E #ff0080
+  set $base0F #a3685a
+  set $black  #000000
+  set $white  #ffffff
+
+#+end_src
+
+windows colors
+#+begin_src conf-unix :tangle config
+  # Property Name             Border  BG      Text    Indicator   Child Border
+  client.unfocused            $base05 $base05 $white  $base05     $base05
+  client.focused_inactive     $base01 $base01 $black  $base03     $base01
+  client.focused              $base00 $base00 $black  $base03     $base01
+  client.urgent               $base08 $base08 $white  $base08     $base08
+  client.placeholder          $base00 $base00 $black  $base00     $base00
+          
+#+end_src
+
+borders 1 pixel witout window titlebar
+#+begin_src conf-unit :tangle config
+  # border
+  for_window [class="^.*"] border pixel 1
+
+#+end_src
+
+* status bar
+** i3status-rs
+#+begin_src conf-unix 
+  bar {
+      font pango:DejaVu Sans Mono, FontAwesome 10
+      position top
+          status_command i3status-rs ~/.config/i3status-rs/config.toml
+      colors {
+          separator           #666666
+          background          #333333
+          statusline          #dddddd
+          focused_workspace   #99B938     #99B938     #000000
+          active_workspace    #F0544C     #333333     #ffffff
+          inactive_workspace  #333333     #333333     #ffffff
+          urgent_workspace    #900000     #900000     #000000
+      }
+  }
+#+end_src
+
+** polybar
+#+begin_src conf-unix :tangle config
+  exec_Always bash $HOME/.config/i3/polybar.sh
+
+#+end_src
+
+*** polybar startup script
+#+begin_src bash :tangle polybar.sh
+  #!/bin/bash
+
+  killall -q polybar
+
+  while pgrep -u $UID -x polybar >/dev/null; do sleep 1; done
+
+  polybar
+
+#+End_src
+
+
+* software
+** authorun
+startup script
+#+begin_src conf-unix :tangle config
+  exec_always bash $HOME/.config/i3/startup.sh
+#+end_src
+*** the startup script
+#+begin_src bash :tangle startup.sh
+  #!/bin/sh
+
+  nitrogen --restore
+  picom --vsync
+  xrandr --output HDMI-1 --auto --left-of eDP-1
+#+end_src
+
+** application menu
+*** rofi
+=win+d= run rofi as program launcher
+#+begin_src conf-unix :tangle config
+  bindsym $mod+d exec rofi -show drun -theme Adapta-Nokto
+#+end_src
+
+** terminal emulator
+define =gnome-terminal= as default terminal emulator
+#+begin_src conf-unix :tangle config
+  set $terminal-emulator gnome-terminal
+#+end_src
+=win + t= or =win + enter= to open terminal
+#+begin_src conf-unix :tangle config
+  bindsym $mod+Return exec $terminal-emulator
+  bindsym $mod+t exec $terminal-emulator
+#+end_src
+
+** screnshots
+*** scripts (slop + maim + notify-send + xclip)
+=PrtScr= to global screenshot
+#+begin_src conf-unix :tangle config
+  bindsym Print exec ~/scripts/screenshot.sh
+#+end_src
+
+ =win + PrtScr= to local screenshot
+#+begin_src conf-unix :tangle config
+  bindsym $mod+Print exec ~/scripts/screenshotLocal.sh
+#+end_src
+** volume controls
+*** amixer
+use default volume keys =volumeUp= =volumeDown= and =volumeMute=
+#+begin_src conf-unix :tangle config
+  bindsym XF86AudioRaiseVolume exec amixer -q set Master 5%+
+  bindsym XF86AudioLowerVolume exec amixer -q set Master 15%-
+  bindsym XF86AudioMute exec amixer -q set Master toggle 
+
+#+end_src
+
+** backlight controls (xbacklight)
+#+begin_src conf-unix :tangle config
+  bindsym XF86MonBrightnessUp   exec xbacklight -inc 10
+  bindsym XF86MonBrightnessDown exec xbacklight -dec l0
+#+end_src
