@@ -60,16 +60,7 @@
   (spaceline-helm-mode)
   (spaceline-spacemacs-theme))
 
-(use-package dashboard
-  :ensure t
-  :config
-  (setq dashboard-center-content t)
-  (setq dashboard-items '((recents  . 5)
-                          (bookmarks . 5)
-                          (projects . 5)
-                          (agenda . 5)
-                          (registers . 5)))
-  (dashboard-setup-startup-hook))
+(add-hook 'emacs-startup-hook (lambda () (find-file "~/Documents/org/index.org")))
 
 (use-package swiper :ensure t)
 
@@ -352,8 +343,17 @@
 (setq gc-cons-threshold 100000000)
 (setq read-process-output-max (* 1024 1024))
 
+(defun efs/lsp-mode-setup ()
+  (setq lsp-headerline-breadcrumb-segments '(path-up-to-project file symbols))
+  (lsp-headerline-breadcrumb-mode))
+
 (use-package lsp-mode
-  :hook ((lsp-mode . lsp-enable-which-key-integration)))
+  :commands (lsp lsp-deferred)
+  :hook (lsp-mode . efs/lsp-mode-setup)
+  :init
+  (setq lsp-keymap-prefix "C-c l")  ;; Or 'C-l', 's-l'
+  :config
+  (lsp-enable-which-key-integration t))
 
 (use-package lsp-ui)
 
@@ -375,9 +375,8 @@
 (use-package async)
 
 (use-package php-mode
-  :after '(tree-sitter tree-sitter-langs)
-  :mode "\\.php\\'"
-  :hook (php-mode . tree-sitter-hl-mode))
+  :hook (php-mode . tree-sitter-hl-mode)
+  :hook (php-mode . lsp-mode))
 
 (use-package rustic)
 
@@ -444,7 +443,8 @@
   :config
   (setq org-ellipsis " ▾")
   (setq org-src-fontify-natively t)
-  (efs/org-font-setup))
+  (efs/org-font-setup)
+  (setq org-confirm-elisp-link-function nil))
 
 (org-babel-do-load-languages
   'org-babel-load-languages
